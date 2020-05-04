@@ -3,7 +3,6 @@ class Controller {
     constructor(model) {
         this.model = model;
         this.index = this.index.bind(this);
-        this.update = this.update.bind(this);
         this.delete = this.delete.bind(this);
     }
 
@@ -34,34 +33,6 @@ class Controller {
             return res.status(500).json({ message: 'there was a problem with the server' });
 
         }
-
-    }
-
-    async update(req,res) {
-
-        try {
-
-            const docId = req.params.id;
-
-            const updates = req.body;
-
-            const doc = await this.model.findByPk(docId);
-
-            if(!doc) {
-
-                return res.status(404).json({ message:'document not found' });
-            
-            }
-
-            await doc.update(updates);
-
-            return res.send();
-
-        } catch(err) {
-
-            return res.status(500).json({ message: 'there was a problem with the server' });
-
-        }        
 
     }
 

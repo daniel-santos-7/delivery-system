@@ -7,6 +7,7 @@ class OrderCtrl extends Controller {
     constructor(model) {
         super(model);
         this.select = this.select.bind(this);
+        this.update = this.update.bind(this);
     }
 
     async store(req,res) {
@@ -51,6 +52,8 @@ class OrderCtrl extends Controller {
                  include:'quantities'
              });
 
+            req.app.locals.io.emit('new order', { id:order.id });
+
             return res.status(201).json({id:order.id});
 
         } catch(err) {
@@ -76,6 +79,36 @@ class OrderCtrl extends Controller {
             }
 
             return res.json(order);
+
+        } catch(err) {
+
+            return res.status(500).json({ message: 'there was a problem with the server' });
+
+        }        
+
+    }
+
+    async update(req,res) {
+
+        try {
+
+            const orderId = req.params.id;
+
+            const {status} = req.body;
+
+            const order = await this.model.findByPk(orderId);
+
+            if(!order) {
+
+                return res.status(404).json({ message:'order not found' });
+            
+            }
+
+            await order.update({status});
+
+            req.app.locals.io.emit('order updated', { id:order.id });
+
+            return res.send();
 
         } catch(err) {
 
