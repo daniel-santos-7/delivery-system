@@ -3,6 +3,7 @@ const { Product,Order } = require('../src/models');
 
 factory.define('Product',Product,{
     name:'X-Tudo',
+    image_url:'http://lorempixel.com/640/480/food/',
     description: 'Lanche delicioso',
     price: 15
 });

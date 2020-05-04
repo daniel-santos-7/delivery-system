@@ -13,9 +13,9 @@ class ProductCtrl extends Controller {
 
         try {
 
-            const { name, description, price } = req.body;
+            const { name, image_url, description, price } = req.body;
 
-            const product = await this.model.create({ name, description, price });
+            const product = await this.model.create({ name, image_url, description, price });
 
             req.app.locals.io.emit('new product', { id:product.id });
 
