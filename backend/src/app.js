@@ -10,6 +10,4 @@ app.use(routes);
 
 app.locals.io = io();
 
-io().emit()
-
 module.exports = app;
