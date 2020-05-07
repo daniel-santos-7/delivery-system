@@ -20,8 +20,10 @@ const PageNavListItem = styled.li`
     padding: .25rem;
     
     &:hover {
-        background-color: ${props=> props.theme.colors.bdSecondary};
-        border-radius: 2px;
+        background-color: ${props=> props.theme.colors.secondary};
+        & > a {
+            color: #fff;
+        }
     }
 
     &:not(:first-child) {

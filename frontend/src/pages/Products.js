@@ -6,12 +6,14 @@ import Main from '../components/Main';
 import { ReactComponent as MenuIcon } from '../assets/restaurant.svg';
 import defaultPreview from '../assets/default-preview.jpg';
 import Pagination from '../components/Pagination';
+import Button from '../components/Button';
+import { MdControlPoint } from 'react-icons/md';
 
 const ProductList = styled.ul`
     list-style-type: none;
     padding: 1rem;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
     grid-gap: .5rem;
 `;
 
@@ -46,36 +48,6 @@ const AddButtonContainer = styled.div`
     text-align: right;
 `;
 
-const AddProductButton = styled.a`
-    display: inline-block;
-    color: #FFF;
-    background-color: ${props=> props.theme.colors.primary};
-    font-size: ${props=> props.theme.fontSizes[2]};
-    padding: 0.25rem 1rem;
-    border-radius: 3px;
-    cursor: pointer;
-    border: 2px solid ${props=> props.theme.colors.primary};
-    &:active {
-        border: 2px solid ${props=> props.theme.colors.secondary};
-    }
-`;
-
-const Button = styled.a`
-    display: inline-block;
-    color: ${props=> props.theme.colors.primary};
-    font-size: ${props=> props.theme.fontSizes[2]};
-    padding: 0.25rem 1rem;
-    border: 2px solid ${props=> props.theme.colors.primary};
-    border-radius: 3px;
-    width: 100%;
-    text-align: center;
-    cursor: pointer;
-    &:hover {
-        background-color: orange;
-        color: #FFF;
-    }
-`;
-
 export default function Products() {
     
     const products = Array.from({length:8});
@@ -88,7 +60,7 @@ export default function Products() {
                     <Title as="h2">Produtos</Title>
                 </TitleContainer>
                 <AddButtonContainer>
-                    <AddProductButton>+ Adicionar</AddProductButton>
+                    <Button variant="secondary"><MdControlPoint size="1.2rem"/>Adicionar</Button>
                 </AddButtonContainer>
                 <ProductList>
                     { products.map(()=> 
@@ -98,7 +70,7 @@ export default function Products() {
                             <ProductDescription>
                                 Descrição do produto...
                             </ProductDescription>
-                            <Button>Visualizar</Button>
+                            <Button big to="/produto">Visualizar</Button>
                         </ProductListItem>
                      )
                     }
