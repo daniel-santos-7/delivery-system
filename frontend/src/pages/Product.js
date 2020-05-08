@@ -32,6 +32,7 @@ const Input = styled.input`
     border: 2px solid ${props=> props.theme.colors.secondary};
     margin: .5rem 0px;
     width: 100%;
+    outline: none;
     &:focus {
         border: 2px solid ${props=> props.theme.colors.primary};
     }

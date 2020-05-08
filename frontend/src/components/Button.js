@@ -14,9 +14,9 @@ const secondary = css`
     color: #FFF;
     border: 2px solid ${props=> props.theme.colors.primary};
     background-color: ${props=> props.theme.colors.primary};
-    &:active {
-        border: 2px solid ${props=> props.theme.colors.secondary};
-        box-shadow: 0px 0px 0px 1px rgba(222,170,12,.5);
+    &:focus {
+        outline: none;
+        box-shadow: 0px 0px 0px 1px rgba(255,99,71,.5);
     }
 `;
 

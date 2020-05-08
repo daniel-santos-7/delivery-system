@@ -48,8 +48,8 @@ export default ()=> (
             <Title>Delivery App</Title>
             <Nav>
                 <NavList>
-                    <NavListItem><NavLink active>Produtos</NavLink></NavListItem>
-                    <NavListItem><NavLink>Pedidos</NavLink></NavListItem>
+                    <NavListItem><NavLink active to="/">Produtos</NavLink></NavListItem>
+                    <NavListItem><NavLink to="/pedidos">Pedidos</NavLink></NavListItem>
                 </NavList>
             </Nav>
         </Container>

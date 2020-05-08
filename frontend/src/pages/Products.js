@@ -56,7 +56,7 @@ export default function Products() {
         <Layout>
             <Main>
                 <TitleContainer>
-                    <MenuIcon width={42} height={42}/>
+                    <MenuIcon width={40} height={40}/>
                     <Title as="h2">Produtos</Title>
                 </TitleContainer>
                 <AddButtonContainer>

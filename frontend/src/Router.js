@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Products from './pages/Products';
 import Product from './pages/Product';
+import Orders from './pages/Orders';
 
 export default function Router() {
     return (
@@ -12,6 +13,9 @@ export default function Router() {
                 </Route>
                 <Route path="/produto" exact>
                     <Product/>
+                </Route>
+                <Route path="/pedidos" exact>
+                    <Orders/>
                 </Route>
             </Switch>
         </BrowserRouter>
