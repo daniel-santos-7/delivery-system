@@ -16,7 +16,9 @@ class Controller {
 
             const offset = (page-1)*limit;
 
-            const docs = await this.model.findAndCountAll({limit,offset});
+            const order = [['createdAt','DESC']];
+
+            const docs = await this.model.findAndCountAll({limit,offset,order});
 
             const count = docs.count;
 
@@ -29,7 +31,7 @@ class Controller {
             return res.json(docs.rows);
 
         } catch(err) {
-
+            console.log(err);
             return res.status(500).json({ message: 'there was a problem with the server' });
 
         }
