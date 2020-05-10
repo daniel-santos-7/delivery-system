@@ -5,6 +5,7 @@ const OrderCtrl = require('./controllers/OrderCtrl');
 
 router.get('/product',ProductCtrl.index);
 router.post('/product',ProductCtrl.store);
+router.get('/product/:id',ProductCtrl.select);
 router.put('/product/:id',ProductCtrl.update);
 router.delete('/product/:id',ProductCtrl.delete);
 

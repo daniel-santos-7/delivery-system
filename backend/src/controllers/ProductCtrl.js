@@ -7,6 +7,7 @@ class ProductCtrl extends Controller {
         super(model);
         this.store = this.store.bind(this);
         this.update = this.update.bind(this);
+        this.select = this.select.bind(this);
     }
 
     async store(req,res) {
@@ -26,6 +27,30 @@ class ProductCtrl extends Controller {
             return res.status(500).json({ message: 'there was a problem with the server' });
 
         }
+
+    }
+
+    async select(req,res) {
+
+        try {
+
+            const productId = req.params.id;
+
+            const product = await this.model.findByPk(productId);
+
+            if(!product) {
+
+                return res.status(404).json({ message:'product not found' });
+            
+            }
+
+            return res.json(product);
+
+        } catch(err) {
+
+            return res.status(500).json({ message: 'there was a problem with the server' });
+
+        }        
 
     }
 

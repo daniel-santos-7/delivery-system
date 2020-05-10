@@ -63,6 +63,22 @@ describe('products tests',()=> {
 
     });
 
+    test('should select a stored product', async ()=> {
+
+        const product = await factory.create('Product');
+       
+        const selectionResponse = await request(app).get(`/product/${product.id}`);
+       
+        expect(selectionResponse.status).toBe(200);
+       
+        expect(selectionResponse.body).toEqual(expect.objectContaining({
+            ...product.dataValues,
+            createdAt:expect.any(String),
+            updatedAt:expect.any(String)
+        }));
+
+    });
+
     test('should delete a product from the database', async ()=> {
 
         const product = await factory.create('Product');
