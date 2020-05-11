@@ -77,10 +77,10 @@ const SelectContainer = styled.div`
     justify-content: flex-end;
 `;
 
-export default function Products() {
-    
-    const products = Array.from({length:8});
-    
+export default function Orders() {
+
+    const orders = [1,2,3];
+
     return (
         <Layout>
             <Main>
@@ -97,8 +97,8 @@ export default function Products() {
                     </Button>
                 </SelectContainer>
                 <OrderList>
-                    { products.map(()=> 
-                        <OrderListItem>
+                    { orders.map((order)=> 
+                        <OrderListItem key={order}>
                             <Title as="h3" fontSize={3}>Daniel Santos</Title>
                             <PhoneText>(84) 99999-9999</PhoneText>
                             <Select as="select" to="/produto">

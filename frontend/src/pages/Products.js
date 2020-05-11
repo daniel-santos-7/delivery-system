@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import styled from 'styled-components';
 import Title from '../components/Title';
@@ -8,6 +8,7 @@ import defaultPreview from '../assets/default-preview.jpg';
 import Pagination from '../components/Pagination';
 import Button from '../components/Button';
 import { MdControlPoint } from 'react-icons/md';
+import api from '../services/api';
 
 const ProductList = styled.ul`
     list-style-type: none;
@@ -23,6 +24,7 @@ const ProductListItem = styled.li`
     border: 1px solid ${props=> props.theme.colors.bdSecondary};
     border-radius: 2px;
     background-color: #FFF;
+    max-width: 300px;
 `;
 
 const ProductPreview = styled.img`
@@ -39,7 +41,7 @@ const TitleContainer = styled.div`
 
 const ProductDescription = styled.p`
     color: ${props=> props.theme.colors.text};
-    font-size: ${props=> props.theme.fontSizes[1]};
+    font-size: ${props=> props.theme.fontSizes[2]};
     margin: .5rem 0px;
 `;
 
@@ -49,9 +51,35 @@ const AddButtonContainer = styled.div`
 `;
 
 export default function Products() {
+
+    const [products, setProducts] = useState([]);
+
+    const [totalCount, setTotalCount] = useState();
+
+    const [page, setPage] = useState(1);
+
+    async function fetchProducts(page=1) {
+      
+        const response = await api.get('/product',{
+            params: { page } 
+        });
+        
+        if(response.data) {
+
+            setProducts(response.data);
+
+            setTotalCount(parseInt(response.headers['x-total-count']));
+        
+        }
     
-    const products = Array.from({length:8});
+    }
+
+    useEffect(()=> {
     
+        fetchProducts(page);
+    
+    },[page]);
+
     return (
         <Layout>
             <Main>
@@ -60,22 +88,22 @@ export default function Products() {
                     <Title as="h2">Produtos</Title>
                 </TitleContainer>
                 <AddButtonContainer>
-                    <Button variant="secondary"><MdControlPoint size="1.2rem"/>Adicionar</Button>
+                    <Button variant="secondary" to="/produto"><MdControlPoint size="1.2rem"/>Adicionar</Button>
                 </AddButtonContainer>
                 <ProductList>
-                    { products.map(()=> 
-                        <ProductListItem>
+                    { products.map((product)=> 
+                        <ProductListItem key={product.id}>
                             <ProductPreview src={defaultPreview} alt="representação de produto"/>
-                            <Title as="h3" fontSize={3}>Produto</Title>
+                            <Title as="h3" fontSize={2}>{product.name} (R${product.price})</Title>
                             <ProductDescription>
-                                Descrição do produto...
+                                {product.description}
                             </ProductDescription>
-                            <Button big to="/produto">Visualizar</Button>
+                            <Button big="true" to={'/produto/'+product.id}>Visualizar</Button>
                         </ProductListItem>
                      )
                     }
                 </ProductList>
-                <Pagination/>
+                <Pagination page={page} totalItems={totalCount} perPage={8} setPage={setPage}/>
             </Main>
         </Layout>
     );

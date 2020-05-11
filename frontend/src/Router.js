@@ -11,7 +11,7 @@ export default function Router() {
                 <Route path="/" exact>
                     <Products/>
                 </Route>
-                <Route path="/produto" exact>
+                <Route path="/produto/:id?" exact>
                     <Product/>
                 </Route>
                 <Route path="/pedidos" exact>

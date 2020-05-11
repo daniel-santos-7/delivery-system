@@ -35,21 +35,20 @@ const NavListItem = styled.li`
 const NavLink = styled(Link)`
     color:  ${props=> props.theme.colors.primary};
     text-decoration: none;
-    font-weight: ${props=> props.active?'bold':null};
     &:hover {
         text-decoration:underline;
-    }  
+    }
 `;
 
-export default ()=> (
+export default (page)=> (
     <Header>
         <Container>
             <FastFoodIcon width={42} height={42}/>
             <Title>Delivery App</Title>
             <Nav>
                 <NavList>
-                    <NavListItem><NavLink active to="/">Produtos</NavLink></NavListItem>
-                    <NavListItem><NavLink to="/pedidos">Pedidos</NavLink></NavListItem>
+                    <NavListItem><NavLink  to="/">Produtos</NavLink></NavListItem>
+                    <NavListItem><NavLink  to="/pedidos">Pedidos</NavLink></NavListItem>
                 </NavList>
             </Nav>
         </Container>

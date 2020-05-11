@@ -40,24 +40,43 @@ const PageLink = styled(Link)`
 `;
 
 
-export default function Pagination() {
-  return (
+export default function Pagination({ page, totalItems, perPage, setPage }) {
+    
+    const totalPages =  Math.ceil(totalItems/perPage);
+    const hasNextPage = page < totalPages;
+    const hasPreviosPage = page > 1;
+
+    const nextPage = ()=> {
+        if(hasNextPage)
+            setPage(page+1);
+    };
+    
+    const previosPage = ()=> {
+        if(hasPreviosPage)
+            setPage(page-1);
+    };
+  
+    return (
       <PageNav>
           <PageNavList>
                 <PageNavListItem>
-                    <PageLink>&#xab;</PageLink>
+                    <PageLink to="" onClick={previosPage}>&#xab;</PageLink>
                 </PageNavListItem>
+                {   hasPreviosPage &&    
+                    <PageNavListItem>
+                        <PageLink to="" onClick={previosPage}>{page-1}</PageLink>
+                    </PageNavListItem>
+                }
                 <PageNavListItem>
-                  <PageLink>1</PageLink>
+                    <PageLink to="">{page}</PageLink>
                 </PageNavListItem>
+                {   hasNextPage &&
+                    <PageNavListItem>
+                        <PageLink to="" onClick={nextPage}>{page+1}</PageLink>
+                    </PageNavListItem>
+                }
                 <PageNavListItem>
-                  <PageLink>2</PageLink>
-                </PageNavListItem>
-                <PageNavListItem>
-                  <PageLink>3</PageLink>
-                </PageNavListItem>
-                <PageNavListItem>
-                    <PageLink>&#xbb;</PageLink>
+                    <PageLink to="" onClick={nextPage}>&#xbb;</PageLink>
                 </PageNavListItem>
           </PageNavList>
       </PageNav>
