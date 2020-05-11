@@ -12,7 +12,7 @@ class Controller {
 
             const { page=1 } = req.query;
 
-            const limit = 10;
+            const limit = 8;
 
             const offset = (page-1)*limit;
 

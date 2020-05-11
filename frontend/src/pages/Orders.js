@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import styled from 'styled-components';
 import Title from '../components/Title';
 import Main from '../components/Main';
 import { ReactComponent as DeliveryIcon } from '../assets/delivery.svg';
 import Button from '../components/Button';
+import api from '../services/api';
 
 const OrderList = styled.ul`
     list-style-type: none;
@@ -79,7 +80,31 @@ const SelectContainer = styled.div`
 
 export default function Orders() {
 
-    const orders = [1,2,3];
+    const [totalCount, setTotalCount] = useState();
+
+    const [orders, setOrders] = useState([]);
+
+    async function fetchOrders(page=1) {
+      
+        const response = await api.get('/order',{
+            params: { page } 
+        });
+        
+        if(response.data) {
+
+            setOrders(response.data);
+
+            setTotalCount(parseInt(response.headers['x-total-count']));
+        
+        }
+    
+    }
+
+    useEffect(()=> {
+
+        fetchOrders();
+
+    },[]);
 
     return (
         <Layout>
@@ -99,8 +124,8 @@ export default function Orders() {
                 <OrderList>
                     { orders.map((order)=> 
                         <OrderListItem key={order}>
-                            <Title as="h3" fontSize={3}>Daniel Santos</Title>
-                            <PhoneText>(84) 99999-9999</PhoneText>
+                            <Title as="h3" fontSize={3}>{order.client}</Title>
+                            <PhoneText>{order.tel}</PhoneText>
                             <Select as="select" to="/produto">
                                 <option>Em progresso</option>
                                 <option>Pago</option>
@@ -108,13 +133,13 @@ export default function Orders() {
                                 <option>Cancelar</option>
                             </Select>
                             <Details>
-                                Detalhes sobre o pedido...
+                                {order.details}
                             </Details>
                             <Date>a 20 minutos</Date>
                             <ProductList>
-                                <ProductListItem>(1) Produto 1</ProductListItem>
-                                <ProductListItem>(4) Produto 2</ProductListItem>
-                                <ProductListItem>(2) Produto 3</ProductListItem>
+                                { order.quantities && order.quantities.map(({quantity,product_id})=> 
+                                    <ProductListItem>({quantity}) Produto {product_id}</ProductListItem>
+                                )}
                             </ProductList>
                         </OrderListItem>
                      )

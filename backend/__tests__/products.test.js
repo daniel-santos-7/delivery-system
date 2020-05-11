@@ -13,9 +13,9 @@ describe('products tests',()=> {
 
     test('should return a list of products', async ()=> {
 
-        const count = 11;
+        const count = 9;
 
-        const perPage = 10;
+        const perPage = 8;
         
         await factory.createMany('Product',count);
 
