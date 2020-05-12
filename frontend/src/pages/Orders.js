@@ -6,6 +6,7 @@ import Main from '../components/Main';
 import { ReactComponent as DeliveryIcon } from '../assets/delivery.svg';
 import Button from '../components/Button';
 import api from '../services/api';
+import socket from '../services/socket';
 
 const OrderList = styled.ul`
     list-style-type: none;
@@ -82,29 +83,81 @@ export default function Orders() {
 
     const [totalCount, setTotalCount] = useState();
 
+    const [filter, setFilter] = useState('on hold');
+
     const [orders, setOrders] = useState([]);
 
-    async function fetchOrders(page=1) {
-      
-        const response = await api.get('/order',{
-            params: { page } 
-        });
-        
-        if(response.data) {
+    const filteredOrders = ()=> orders.filter(order=> order.status===filter);
 
-            setOrders(response.data);
+    async function setOrderStatus(id,status) {
 
-            setTotalCount(parseInt(response.headers['x-total-count']));
-        
+        try {
+
+            await api.put(`/order/${id}`,{status});
+
+            setOrders(orders=> orders.map(order=> {
+                if(order.id === id) {
+                    order.status = status;
+                }
+                return order;
+            }));
+
+        } catch(err) {
+
+            alert('Não foi possível alterar o status do pedido!');
+
         }
-    
+
     }
 
     useEffect(()=> {
 
+        async function fetchOrders(page=1) {
+      
+            const response = await api.get('/order',{
+                params: { page } 
+            });
+            
+            if(response.data) {
+    
+                setOrders(response.data);
+    
+                setTotalCount(parseInt(response.headers['x-total-count']));
+            
+            }
+        
+        }
+
         fetchOrders();
 
     },[]);
+
+    useEffect(()=> {
+
+        async function fetchOrder(id) {
+
+            const response = await api.get(`/order/${id}`);
+    
+            if(response.data) {
+                
+                const newOrders = orders.slice();
+
+                newOrders.unshift(response.data);
+
+                setOrders(newOrders);
+    
+                setTotalCount(totalCount+1);
+            
+            }
+    
+        }
+
+        socket.on('new order',(order)=> fetchOrder(order.id));
+
+        return ()=> socket.off('new order');
+
+    },[orders,totalCount]);
+
 
     return (
         <Layout>
@@ -114,32 +167,32 @@ export default function Orders() {
                     <Title as="h2">Pedidos</Title>
                 </TitleContainer>
                 <SelectContainer>
-                    <Button variant="secondary" as="select">
-                        <option>Em progresso</option>
-                        <option>Pagos</option>
-                        <option>Cancelados</option>
-                        <option>Aguardando</option>
+                    <Button variant="secondary" as="select" value={filter} onChange={(e)=> setFilter(e.target.value)}>
+                        <option value="on hold">Em espera</option>
+                        <option value="in progress">Em progresso</option>
+                        <option value="delivered">Entregues</option>
+                        <option value="canceled">Cancelados</option>
                     </Button>
                 </SelectContainer>
                 <OrderList>
-                    { orders.map((order)=> 
-                        <OrderListItem key={order}>
+                    { filteredOrders().map((order)=> 
+                        <OrderListItem key={order.id}>
                             <Title as="h3" fontSize={3}>{order.client}</Title>
-                            <PhoneText>{order.tel}</PhoneText>
-                            <Select as="select" to="/produto">
-                                <option>Em progresso</option>
-                                <option>Pago</option>
-                                <option>Aguardando</option>
-                                <option>Cancelar</option>
+                            <PhoneText>{order.tel} - {order.location}</PhoneText>
+                            <Select as="select" to="/produto" value={order.status} onChange={(e)=> setOrderStatus(order.id,e.target.value)}>
+                                <option value="on hold">Em espera</option>
+                                <option value="in progress">Em progresso</option>
+                                <option value="delivered">Entregue</option>
+                                <option value="canceled">Cancelado</option>
                             </Select>
                             <Details>
                                 {order.details}
                             </Details>
                             <Date>a 20 minutos</Date>
                             <ProductList>
-                                { order.quantities && order.quantities.map(({quantity,product_id})=> 
-                                    <ProductListItem>({quantity}) Produto {product_id}</ProductListItem>
-                                )}
+                                { order.products.map((product => 
+                                    <ProductListItem>({product.quantities.quantity}) {product.name}</ProductListItem>
+                                ))}
                             </ProductList>
                         </OrderListItem>
                      )
