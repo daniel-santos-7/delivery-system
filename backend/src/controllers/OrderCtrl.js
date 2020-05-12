@@ -1,13 +1,55 @@
 const { Op } = require('sequelize');
 const { Order, Product } = require('../models');
-const Controller = require('./Controller');
 
-class OrderCtrl extends Controller {
+class OrderCtrl {
 
     constructor(model) {
-        super(model);
+        this.model = model;
+        this.index = this.index.bind(this);
         this.select = this.select.bind(this);
         this.update = this.update.bind(this);
+        this.delete = this.delete.bind(this);
+    }
+
+    async index(req,res) {
+
+        try {
+
+            const { page=1 } = req.query;
+
+            const limit = 8;
+
+            const offset = (page-1)*limit;
+
+            const order = [['createdAt','DESC']];
+
+            const include = {
+                association: 'products',
+                attributes:['name'],
+                through: {
+                    as: 'quantities',
+                    attributes: ['quantity'] 
+                } 
+            };
+
+            const docs = await this.model.findAndCountAll({limit,offset,order,include});
+
+            const count = docs.count;
+
+            res.header('X-Total-Count',count);
+
+            if(count===0) {
+                return res.status(204).json({ message:'no registered documents' });
+            }
+
+            return res.json(docs.rows);
+
+        } catch(err) {
+
+            return res.status(500).json({ message: 'there was a problem with the server' });
+
+        }
+
     }
 
     async store(req,res) {
@@ -69,8 +111,17 @@ class OrderCtrl extends Controller {
         try {
 
             const orderId = req.params.id;
+            
+            const include = {
+                association: 'products',
+                attributes:['name'],
+                through: {
+                    as: 'quantities',
+                    attributes: ['quantity'] 
+                } 
+            };
 
-            const order = await this.model.findByPk(orderId, { include:'quantities' });
+            const order = await this.model.findByPk(orderId, { include });
 
             if(!order) {
 
@@ -109,6 +160,32 @@ class OrderCtrl extends Controller {
             req.app.locals.io.emit('order updated', { id:order.id });
 
             return res.send();
+
+        } catch(err) {
+
+            return res.status(500).json({ message: 'there was a problem with the server' });
+
+        }        
+
+    }
+
+    async delete(req,res) {
+
+        try {
+
+            const docId = req.params.id;
+
+            const doc = await this.model.findByPk(docId);
+
+            if(!doc) {
+
+                return res.status(404).json({ message:'document not found' });
+            
+            }
+
+            await doc.destroy();
+
+            return res.status(204).send();
 
         } catch(err) {
 
