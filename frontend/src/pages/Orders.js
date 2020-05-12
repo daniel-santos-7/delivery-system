@@ -7,6 +7,8 @@ import { ReactComponent as DeliveryIcon } from '../assets/delivery.svg';
 import Button from '../components/Button';
 import api from '../services/api';
 import socket from '../services/socket';
+import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import { ptBR } from 'date-fns/locale';
 
 const OrderList = styled.ul`
     list-style-type: none;
@@ -27,7 +29,7 @@ const OrderListItem = styled.li`
 
 const ProductList = styled.ul`
     margin: .5rem 0px;
-`
+`;
 
 const ProductListItem = styled.li`
     display: inline-block;
@@ -83,6 +85,10 @@ export default function Orders() {
 
     const [totalCount, setTotalCount] = useState();
 
+    const [count, setCount] = useState(0);
+
+    const [page, setPage] = useState(1);
+
     const [filter, setFilter] = useState('on hold');
 
     const [orders, setOrders] = useState([]);
@@ -120,7 +126,9 @@ export default function Orders() {
             
             if(response.data) {
     
-                setOrders(response.data);
+                setOrders(orders=> [...orders,...response.data]);
+
+                setCount(count=> count+response.data.length);
     
                 setTotalCount(parseInt(response.headers['x-total-count']));
             
@@ -128,9 +136,9 @@ export default function Orders() {
         
         }
 
-        fetchOrders();
+        fetchOrders(page);
 
-    },[]);
+    },[page]);
 
     useEffect(()=> {
 
@@ -147,6 +155,8 @@ export default function Orders() {
                 setOrders(newOrders);
     
                 setTotalCount(totalCount+1);
+
+                setCount(count+1);
             
             }
     
@@ -156,8 +166,21 @@ export default function Orders() {
 
         return ()=> socket.off('new order');
 
-    },[orders,totalCount]);
+    },[orders,totalCount,count]);
 
+    useEffect(() => {
+
+        function handleScroll() {
+            if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight) return;
+            if(count<totalCount) {
+                setPage(page=>page+1);
+            }
+        }
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    
+    }, [count,totalCount]);
 
     return (
         <Layout>
@@ -188,7 +211,7 @@ export default function Orders() {
                             <Details>
                                 {order.details}
                             </Details>
-                            <Date>a 20 minutos</Date>
+                            <Date>{formatDistanceToNow(new window.Date(order.createdAt),{ locale:ptBR })}</Date>
                             <ProductList>
                                 { order.products.map((product => 
                                     <ProductListItem>({product.quantities.quantity}) {product.name}</ProductListItem>

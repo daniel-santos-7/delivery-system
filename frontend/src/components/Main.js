@@ -4,4 +4,5 @@ export default styled.main`
     padding: 1rem;
     max-width: 1200px;
     margin: 0px auto;
+    min-height: 90vh;
 `;
