@@ -77,26 +77,6 @@ export default function Product() {
 
     const history = useHistory();
 
-    async function fetchProduct(id) {
-        
-        if(!id) {
-            return;
-        }
-
-        const response = await api.get(`/product/${id}`);
-
-        const product = response.data;
-        
-        setName(product.name);
-        
-        setDescription(product.description);
-
-        setPrice(product.price);
-
-        setImage(product.image_url);
-
-    }
-
     async function deleteProduct(id) {
 
         if(!id) {
@@ -144,6 +124,26 @@ export default function Product() {
     }
 
     useEffect(()=> {
+
+        async function fetchProduct(id) {
+        
+            if(!id) {
+                return;
+            }
+    
+            const response = await api.get(`/product/${id}`);
+    
+            const product = response.data;
+            
+            setName(product.name);
+            
+            setDescription(product.description);
+    
+            setPrice(product.price);
+    
+            setImage(product.image_url);
+    
+        }
 
         fetchProduct(id);
 
