@@ -1,7 +1,7 @@
 # :hamburger: Sistema de Delivery
-Pequeno projeto de um sistema de delivery. Consiste em uma plataforma integrada a uma API que permite o cadastro de produtos e o gerenciamentos de pedidos em tempo real.
+Pequeno projeto de um sistema de *delivery*. Consiste em uma plataforma integrada a uma API que permite o cadastro de produtos e o gerenciamentos de pedidos em tempo real.
 
-![preview](.github/preview.jpg)
+![preview](.github/preview.png)
 
 :star: **Recursos**:
 
